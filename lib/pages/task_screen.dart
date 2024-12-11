@@ -19,6 +19,9 @@ class _TaskScreenState extends State<TaskScreen> {
   DateTime? _selectedDate;
 
   void _addTask(TaskProvider taskProvider) {
+    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
+      return;
+    }
     final newTask = Task(
       title: _titleController.text,
       description: _descriptionController.text,
@@ -108,7 +111,10 @@ class _TaskScreenState extends State<TaskScreen> {
                               fontSize: 15,
                             ),
                           ),
-                          title: Text(task.title),
+                          title: Text(
+                            task.title,
+                            style: const TextStyle(color: Color(0XFFDDD3A4)),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -122,7 +128,8 @@ class _TaskScreenState extends State<TaskScreen> {
                           ),
                           trailing: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => taskProvider.deleteTask(index),
+                            onPressed: () =>
+                                taskProvider.deleteTaskAtIndex(index),
                           ),
                         );
                       },
@@ -143,13 +150,26 @@ class _TaskScreenState extends State<TaskScreen> {
                       labelText: 'Task Title',
                       border: OutlineInputBorder(),
                     ),
+                    style: const TextStyle(
+                      color: Colors.white, // Change this to your desired color
+                      fontSize: 16, // Optional: Change font size
+                      fontWeight:
+                          FontWeight.bold, // Optional: Change font weight
+                    ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
+                    maxLines: 2,
                     controller: _descriptionController,
                     decoration: const InputDecoration(
                       labelText: 'Task Description',
                       border: OutlineInputBorder(),
+                    ),
+                    style: const TextStyle(
+                      color: Colors.white, // Change this to your desired color
+                      fontSize: 16, // Optional: Change font size
+                      fontWeight:
+                          FontWeight.bold, // Optional: Change font weight
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -162,6 +182,10 @@ class _TaskScreenState extends State<TaskScreen> {
                             : 'Due: ${_selectedDate?.year.toString()}-${_selectedDate?.month.toString()}-${_selectedDate?.day.toString()}\n${_selectedDate?.hour.toString()}:${_selectedDate?.minute.toString()}',
                       ),
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 5,
+                          backgroundColor: const Color(0XFF111A24),
+                        ),
                         onPressed: () async {
                           if (widget.category == 'Daily') {
                             await _pickTime();
@@ -169,16 +193,30 @@ class _TaskScreenState extends State<TaskScreen> {
                             await _pickDateTime();
                           }
                         },
-                        child: Text(widget.category == 'Daily'
-                            ? 'Pick Time'
-                            : 'Pick Date & Time'),
+                        child: Text(
+                          widget.category == 'Daily'
+                              ? 'Pick Time'
+                              : 'Pick Date & Time',
+                          style: const TextStyle(
+                              //color: Color(0XFFDDD3A4),
+                              ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5,
+                      backgroundColor: const Color(0XFF111A24),
+                    ),
                     onPressed: () => _addTask(taskProvider),
-                    child: const Text('Add Task'),
+                    child: const Text(
+                      'Add Task',
+                      style: TextStyle(
+                          //color: Color(0XFFDDD3A4),
+                          ),
+                    ),
                   ),
                 ],
               ),

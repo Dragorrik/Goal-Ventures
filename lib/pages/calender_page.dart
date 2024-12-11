@@ -34,6 +34,79 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
     return highlightedDays;
   }
 
+  // Show tasks for the selected day in a dialog
+  void _showTaskDialog(List<Task> tasks) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: tasks.isNotEmpty
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: tasks.map((task) {
+                    return ListTile(
+                      title: Text(
+                        task.title,
+                        style: const TextStyle(
+                          color: Color(0XFFDDD3A4),
+                          fontSize: 20,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Description: \n${task.description}',
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Created: \n${task.createdTime}',
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          if (task.dueDate != null)
+                            Text(
+                              'Due: \n${task.dueDate}',
+                            ),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          final taskProvider =
+                              Provider.of<TaskProvider>(context, listen: false);
+                          taskProvider.deleteSpecificTask(task);
+                          Navigator.of(context).pop(); // Close dialog
+                        },
+                      ),
+                    );
+                  }).toList(),
+                )
+              : const Text(
+                  textAlign: TextAlign.center,
+                  'No tasks for this date\nAdd new task or find your\nremaining tasks under the\nred dotted date',
+                  style: TextStyle(color: Color(0XFFDDD3A4)),
+                ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final taskProvider = Provider.of<TaskProvider>(context);
@@ -41,7 +114,7 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
 
     final highlightedDays = _generateHighlightedDays(tasks);
 
-    List<String> _getEventsForDay(DateTime day) {
+    List<String> getEventsForDay(DateTime day) {
       return highlightedDays[DateTime(day.year, day.month, day.day)] ?? [];
     }
 
@@ -58,8 +131,17 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
               _selectedDay = selectedDay;
               _focusedDay = focusedDay; // Update the focused day
             });
+
+            // Show tasks for the selected day
+            final tasksForDay = tasks.where((task) {
+              final taskDate = DateTime(
+                  task.dueDate!.year, task.dueDate!.month, task.dueDate!.day);
+              return isSameDay(taskDate, selectedDay);
+            }).toList();
+
+            _showTaskDialog(tasksForDay);
           },
-          eventLoader: _getEventsForDay, // Load tasks as events
+          eventLoader: getEventsForDay, // Load tasks as events
           calendarStyle: const CalendarStyle(
             isTodayHighlighted: true,
             markerDecoration: BoxDecoration(
@@ -67,7 +149,7 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
               shape: BoxShape.circle,
             ),
             todayDecoration: BoxDecoration(
-              color: Colors.blue,
+              color: Color.fromARGB(255, 179, 149, 60),
               shape: BoxShape.circle,
             ),
             selectedDecoration: BoxDecoration(
@@ -76,23 +158,6 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
             ),
           ),
         ),
-        //   if (_selectedDay != null) ...[
-        //     const SizedBox(height: 10),
-        //     Text(
-        //       'Tasks on ${_selectedDay!.toLocal().toString().split(' ')[0]}:',
-        //       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        //     ),
-        //     const SizedBox(height: 10),
-        //     Expanded(
-        //       child: ListView(
-        //         children: _getEventsForDay(_selectedDay!).map((event) {
-        //           return ListTile(
-        //             title: Text(event),
-        //           );
-        //         }).toList(),
-        //       ),
-        //     ),
-        //   ],
       ],
     ));
   }

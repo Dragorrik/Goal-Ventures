@@ -14,8 +14,20 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteTask(int index) {
+  void deleteTaskAtIndex(int index) {
     _taskBox.deleteAt(index);
     notifyListeners();
+  }
+
+  void deleteSpecificTask(Task task) {
+    final key = _taskBox.keys.firstWhere(
+      (k) => _taskBox.get(k) == task,
+      orElse: () => null,
+    );
+
+    if (key != null) {
+      _taskBox.delete(key);
+      notifyListeners();
+    }
   }
 }
