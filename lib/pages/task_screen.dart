@@ -98,7 +98,7 @@ class _TaskScreenState extends State<TaskScreen> {
             SizedBox(
               height: widget.category == 'Daily'
                   ? MediaQuery.of(context).size.height * 0.25
-                  : MediaQuery.of(context).size.height * 0.6,
+                  : MediaQuery.of(context).size.height * 0.68,
               child: widget.category == 'Daily'
                   ? ListView.builder(
                       itemCount: tasks.length,

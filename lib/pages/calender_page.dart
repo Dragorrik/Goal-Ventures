@@ -118,12 +118,18 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
       return highlightedDays[DateTime(day.year, day.month, day.day)] ?? [];
     }
 
+    // Define the start and end of the current month
+    final currentMonthStart = DateTime(_focusedDay.year, _focusedDay.month, 1);
+    final currentMonthEnd = DateTime(_focusedDay.year, _focusedDay.month + 1,
+        0); // Last day of current month
+    final lastYear = DateTime(_focusedDay.year + 100, 12, 31);
+
     return Scaffold(
         body: Column(
       children: [
         TableCalendar(
-          firstDay: DateTime(2020, 1, 1),
-          lastDay: DateTime(2100, 12, 31),
+          firstDay: currentMonthStart,
+          lastDay: widget.category == 'Monthly' ? currentMonthEnd : lastYear,
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
           onDaySelected: (selectedDay, focusedDay) {
