@@ -19,9 +19,23 @@ class _TaskScreenState extends State<TaskScreen> {
   DateTime? _selectedDate;
 
   void _addTask(TaskProvider taskProvider) {
+    // Check if fields are empty
     if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          //showCloseIcon: true,
+          content: Text(
+            "Please fill in all fields to add a task.",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
       return;
     }
+
+    // Add the task
     final newTask = Task(
       title: _titleController.text,
       description: _descriptionController.text,
@@ -30,9 +44,23 @@ class _TaskScreenState extends State<TaskScreen> {
       createdTime: DateTime.now(),
     );
     taskProvider.addTask(newTask);
+
+    // Clear fields
     _titleController.clear();
     _descriptionController.clear();
     _selectedDate = null;
+
+    // Show a success Snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Task added successfully!",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> _pickTime() async {

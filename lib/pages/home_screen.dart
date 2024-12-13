@@ -22,8 +22,8 @@ class HomeScreen extends StatelessWidget {
             indicatorColor: Colors.white,
             tabs: [
               Tab(text: 'Daily'),
+              Tab(text: 'Weekly'),
               Tab(text: 'Monthly'),
-              Tab(text: 'Yearly'),
             ],
           ),
         ),

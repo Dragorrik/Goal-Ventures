@@ -40,68 +40,79 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: const Color(0XFF111A24),
           content: tasks.isNotEmpty
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: tasks.map((task) {
-                    return ListTile(
-                      title: Text(
-                        task.title,
-                        style: const TextStyle(
-                          color: Color(0XFFDDD3A4),
-                          fontSize: 20,
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              ? SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: tasks.map((task) {
+                      return Column(
                         children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Description: \n${task.description}',
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'Created: \n${task.createdTime}',
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          if (task.dueDate != null)
-                            Text(
-                              'Due: \n${task.dueDate}',
+                          ListTile(
+                            title: Text(
+                              task.title,
+                              style: const TextStyle(
+                                color: Color(0XFFDDD3A4),
+                                fontSize: 20,
+                              ),
                             ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 5),
+                                Text('Description: \n${task.description}'),
+                                const SizedBox(height: 5),
+                                Text('Created: \n${task.createdTime}'),
+                                const SizedBox(height: 5),
+                                if (task.dueDate != null)
+                                  Text('Due: \n${task.dueDate}'),
+                                const Divider(color: Colors.grey),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 219, 82, 73),
+                                  elevation: 5,
+                                ),
+                                onPressed: () {
+                                  final taskProvider =
+                                      Provider.of<TaskProvider>(context,
+                                          listen: false);
+                                  taskProvider.deleteSpecificTask(task);
+                                  Navigator.of(context).pop(); // Close dialog
+                                },
+                                child: const Text(
+                                  'Delete',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0XFF111A24),
+                                  elevation: 5,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Close dialog
+                                },
+                                child: const Text('Close'),
+                              ),
+                            ],
+                          ),
                         ],
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          final taskProvider =
-                              Provider.of<TaskProvider>(context, listen: false);
-                          taskProvider.deleteSpecificTask(task);
-                          Navigator.of(context).pop(); // Close dialog
-                        },
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ),
                 )
               : const Text(
                   textAlign: TextAlign.center,
                   'No tasks for this date\nAdd new task or find your\nremaining tasks under the\nred dotted date',
                   style: TextStyle(color: Color(0XFFDDD3A4)),
                 ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close',
-                  style: TextStyle(
-                    color: Colors.white,
-                  )),
-            ),
-          ],
         );
       },
     );
