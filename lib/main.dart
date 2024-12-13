@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goal_ventures/models/task_model.dart';
-import 'package:goal_ventures/pages/home_screen.dart';
+import 'package:goal_ventures/pages/splash_screen.dart';
 import 'package:goal_ventures/providers/task_provider.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
               TextStyle(color: Color(0XFFDDD3A4), fontSize: 20), // Title color
         ),
       ),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
