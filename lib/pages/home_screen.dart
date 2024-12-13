@@ -30,8 +30,8 @@ class HomeScreen extends StatelessWidget {
         body: const TabBarView(
           children: [
             TaskScreen(category: 'Daily'),
+            TaskScreen(category: 'Weekly'),
             TaskScreen(category: 'Monthly'),
-            TaskScreen(category: 'Yearly'),
           ],
         ),
       ),

@@ -140,7 +140,7 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
       children: [
         TableCalendar(
           firstDay: currentMonthStart,
-          lastDay: widget.category == 'Monthly' ? currentMonthEnd : lastYear,
+          lastDay: widget.category == 'Weekly' ? currentMonthEnd : lastYear,
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
           onDaySelected: (selectedDay, focusedDay) {

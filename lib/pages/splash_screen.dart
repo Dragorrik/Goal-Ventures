@@ -83,25 +83,25 @@ class _SplashScreenState extends State<SplashScreen> {
                       ],
                       isRepeatingAnimation: true,
                     ),
+                    const SizedBox(height: 40),
+                    // Add a circular progress indicator with animation
+                    CircularPercentIndicator(
+                      radius: 50.0,
+                      lineWidth: 6.0,
+                      animation: true,
+                      percent: 1, // Adjust this for the desired progress
+                      animationDuration: 1500,
+                      center: const Icon(
+                        Icons.shield_moon,
+                        color: Color(0XFFDDD3A4),
+                        size: 40.0,
+                      ),
+                      backgroundColor: Colors.white24,
+                      progressColor: const Color(0XFFDDD3A4),
+                    ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 40),
-            // Add a circular progress indicator with animation
-            CircularPercentIndicator(
-              radius: 50.0,
-              lineWidth: 6.0,
-              animation: true,
-              percent: 1, // Adjust this for the desired progress
-              animationDuration: 1500,
-              center: const Icon(
-                Icons.shield_moon,
-                color: Color(0XFFDDD3A4),
-                size: 40.0,
-              ),
-              backgroundColor: Colors.white24,
-              progressColor: const Color(0XFFDDD3A4),
             ),
           ],
         ),
