@@ -19,11 +19,15 @@ class Task extends HiveObject {
   @HiveField(4)
   final DateTime createdTime; // Time when the task is created.
 
+  @HiveField(5)
+  bool isCompleted; // Time when the task is created.
+
   Task({
     required this.title,
     required this.description,
     this.dueDate,
     required this.category,
     required this.createdTime,
+    this.isCompleted = false,
   });
 }

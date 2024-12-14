@@ -83,7 +83,7 @@ class _HighlightedCalendarState extends State<HighlightedCalendar> {
                                   final taskProvider =
                                       Provider.of<TaskProvider>(context,
                                           listen: false);
-                                  taskProvider.deleteSpecificTask(task);
+                                  taskProvider.markTaskAsCompleted(task);
                                   Navigator.of(context).pop(); // Close dialog
                                 },
                                 child: const Text(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goal_ventures/pages/calender_page.dart';
+import 'package:goal_ventures/pages/completed_task_page.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import '../models/task_model.dart';
 import '../providers/task_provider.dart';
@@ -97,7 +99,7 @@ class _TaskScreenState extends State<TaskScreen>
           style: TextStyle(color: Colors.white),
           textAlign: TextAlign.center,
         ),
-        backgroundColor: Color.fromARGB(255, 121, 230, 125),
+        backgroundColor: Color.fromARGB(255, 2, 163, 7),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -153,37 +155,52 @@ class _TaskScreenState extends State<TaskScreen>
   @override
   Widget build(BuildContext context) {
     final taskProvider = Provider.of<TaskProvider>(context);
-    final tasks = taskProvider.getTasks(widget.category);
+    final tasks = taskProvider
+        .getTasks(widget.category)
+        .where((task) => !task.isCompleted) // Show only incomplete tasks
+        .toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Container(
-          padding: const EdgeInsets.all(10),
-          height: MediaQuery.of(context).size.height * 0.1,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            color: Color.fromARGB(255, 23, 39, 58),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${widget.category} Tasks',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
       body: SingleChildScrollView(
         child: SlideTransition(
           position: _slideAnimation,
           child: Column(
             children: [
+              Container(
+                margin: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(10),
+                height: MediaQuery.of(context).size.height * 0.14,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: Color.fromARGB(255, 23, 39, 58),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${widget.category} Tasks',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    CircularPercentIndicator(
+                      radius: 30.0,
+                      lineWidth: 6.0,
+                      percent: taskProvider
+                              .calculateCompletionPercentage(widget.category) /
+                          100,
+                      center: Text(
+                        '${taskProvider.calculateCompletionPercentage(widget.category).toStringAsFixed(1)}%',
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                      progressColor: Colors.green,
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(
                 height: 15,
               ),
@@ -234,27 +251,52 @@ class _TaskScreenState extends State<TaskScreen>
                                         ),
                                         child: ListTile(
                                           title: Text(
+                                            textAlign: TextAlign.center,
                                             task.title,
                                             style: const TextStyle(
                                                 color: Color(0XFFDDD3A4)),
                                           ),
                                           subtitle: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            // crossAxisAlignment:
+                                            //     CrossAxisAlignment.start,
                                             children: [
-                                              Text(task.description),
+                                              Text(
+                                                  textAlign: TextAlign.center,
+                                                  task.description),
                                               if (task.dueDate != null)
                                                 Text(
+                                                    textAlign: TextAlign.center,
                                                     'Due: ${task.dueDate?.hour}:${task.dueDate?.minute}'),
                                               Text(
+                                                  textAlign: TextAlign.center,
                                                   'Created: ${task.createdTime.year}-${task.createdTime.month}-${task.createdTime.day}'),
+                                              InkWell(
+                                                onTap: () => taskProvider
+                                                    .markTaskAsCompleted(task),
+                                                child: Container(
+                                                  margin: const EdgeInsets.only(
+                                                      top: 15),
+                                                  width: double.infinity,
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: Color.fromARGB(
+                                                              255, 219, 82, 73),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                  child: const Text(
+                                                    textAlign: TextAlign.center,
+                                                    'Done',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
                                             ],
-                                          ),
-                                          trailing: IconButton(
-                                            icon: const Icon(Icons.delete,
-                                                color: Color(0XFFB75B48)),
-                                            onPressed: () => taskProvider
-                                                .deleteTaskAtIndex(index),
                                           ),
                                         ),
                                       ),
@@ -315,6 +357,60 @@ class _TaskScreenState extends State<TaskScreen>
                 padding: const EdgeInsets.all(15),
                 child: Column(
                   children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CompletedTaskPage(
+                                      category: widget.category,
+                                    )));
+                      },
+                      child: Container(
+                        //margin: const EdgeInsets.all(15),
+                        //padding: const EdgeInsets.all(5),
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          color: Color.fromARGB(255, 2, 163, 7),
+                          border: Border(
+                            top: BorderSide(
+                              color: Colors.white,
+                              //width: 1.2,
+                            ),
+                            left: BorderSide(
+                              color: Colors.white,
+                              //width: 1.2,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.white,
+                              //width: 1.2,
+                            ),
+                            right: BorderSide(
+                              color: Colors.white,
+                              // width: 1.2,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${widget.category} Completed Tasks',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                //fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     TextField(
                       controller: _titleController,
                       decoration: const InputDecoration(
