@@ -193,7 +193,8 @@ class _TaskScreenState extends State<TaskScreen>
                         height: MediaQuery.of(context).size.height * 0.35,
                         child: const Center(
                           child: Text(
-                            'No task created.\nCreate task from below',
+                            'No tasks available.\nCreate tasks from below.',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
                             ),
@@ -396,7 +397,7 @@ class _TaskScreenState extends State<TaskScreen>
                       onPressed: () {
                         debugPrint("TASK IS ${tasks.isEmpty}");
                         _addTask(taskProvider);
-                        debugPrint("TASK IS ${tasks}");
+                        debugPrint("TASK IS $tasks");
                       },
                       child: const Text(
                         'Add Task',
