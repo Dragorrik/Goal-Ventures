@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goal_ventures/models/task_model.dart';
 import 'package:goal_ventures/pages/home_screen.dart';
+import 'package:goal_ventures/pages/splash_screen.dart';
 import 'package:goal_ventures/providers/task_provider.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark, // Sets the app to dark mode
         scaffoldBackgroundColor: const Color(0XFF111A24),
+        inputDecorationTheme: const InputDecorationTheme(
+          labelStyle: TextStyle(color: Colors.white),
+          focusColor: Colors.white,
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          hintStyle: TextStyle(color: Colors.white70),
+        ),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Color(0XFFDDD3A4)), // Default text color
           bodyMedium: TextStyle(color: Color(0XFFDDD3A4)), // Medium text color
@@ -41,7 +53,7 @@ class MyApp extends StatelessWidget {
               TextStyle(color: Color(0XFFDDD3A4), fontSize: 20), // Title color
         ),
       ),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }

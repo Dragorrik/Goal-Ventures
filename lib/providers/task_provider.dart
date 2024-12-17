@@ -60,7 +60,7 @@ class TaskProvider extends ChangeNotifier {
     final lastCompletedTask = getLastCompletedTask(category);
 
     if (lastCompletedTask != null) {
-      // Compare the dates of last completed task and the new task
+      // Extract dates for comparison
       final lastCompletedDate = DateTime(
         lastCompletedTask.createdTime.year,
         lastCompletedTask.createdTime.month,
@@ -73,28 +73,40 @@ class TaskProvider extends ChangeNotifier {
         newTask.createdTime.day,
       );
 
-      // Check if the new task is the next day
-      if (newTaskDate.difference(lastCompletedDate).inDays == 1) {
-        // Clear all completed tasks
-        final completedTasksKeys = _taskBox.keys
-            .where((key) =>
-                _taskBox.get(key)?.category == category &&
-                (_taskBox.get(key)?.isCompleted ?? false))
-            .toList();
-
-        for (var key in completedTasksKeys) {
-          _taskBox.delete(key);
+      if (category == 'Daily') {
+        // Clear completed tasks only if the new task is for the next consecutive day
+        if (newTaskDate.difference(lastCompletedDate).inDays == 1) {
+          clearCompletedTasks(category);
+          resetPercentageBar(category);
         }
-
-        notifyListeners();
-
-        // Reset percentage bar (if applicable)
-        resetPercentageBar(category);
+      } else if (category == 'Weekly') {
+        // Clear tasks when entering a new month
+        if (lastCompletedTask.createdTime.month != newTask.createdTime.month) {
+          clearCompletedTasks(category);
+          resetPercentageBar(category);
+        }
+      } else if (category == 'Monthly') {
+        // No clearing for monthly tasks
+        // Tasks are retained in the completed list.
       }
     }
 
     // Add the new task to the task box
     addTask(newTask);
+  }
+
+  void clearCompletedTasks(String category) {
+    final completedTasksKeys = _taskBox.keys
+        .where((key) =>
+            _taskBox.get(key)?.category == category &&
+            (_taskBox.get(key)?.isCompleted ?? false))
+        .toList();
+
+    for (var key in completedTasksKeys) {
+      _taskBox.delete(key);
+    }
+
+    notifyListeners();
   }
 
   void resetPercentageBar(String category) {

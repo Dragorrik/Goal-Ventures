@@ -59,7 +59,6 @@ class _TaskScreenState extends State<TaskScreen>
             borderRadius: BorderRadius.all(Radius.circular(15)),
           ),
           elevation: 5,
-          //showCloseIcon: true,
           content: Text(
             "Please fill in all fields to add a task.",
             style: TextStyle(color: Colors.white),
@@ -72,7 +71,7 @@ class _TaskScreenState extends State<TaskScreen>
       return;
     }
 
-    // Add the task
+    // Create the new task
     final newTask = Task(
       title: _titleController.text,
       description: _descriptionController.text,
@@ -80,7 +79,9 @@ class _TaskScreenState extends State<TaskScreen>
       category: widget.category,
       createdTime: DateTime.now(),
     );
-    taskProvider.addTask(newTask);
+
+    // Use handleNewDayTask to add the task and handle new day logic
+    taskProvider.handleNewDayTask(newTask, widget.category);
 
     // Clear fields
     _titleController.clear();
@@ -124,12 +125,20 @@ class _TaskScreenState extends State<TaskScreen>
     }
   }
 
-  Future<void> _pickDateTime() async {
+  Future<void> _pickDateTime(String category) async {
+    DateTime now = DateTime.now(); // Current date and time
+    DateTime startOfMonth =
+        DateTime(now.year, now.month, 1); // First day of the current month
+    DateTime endOfMonth =
+        DateTime(now.year, now.month + 1, 0); // Last day of the current month
+
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
+      firstDate: startOfMonth, // Restrict to the start of the current month
+      lastDate: category == 'Weekly'
+          ? endOfMonth
+          : DateTime(2100), // End of the current month or 2100
     );
 
     if (pickedDate != null) {
@@ -467,7 +476,7 @@ class _TaskScreenState extends State<TaskScreen>
                             if (widget.category == 'Daily') {
                               await _pickTime();
                             } else {
-                              await _pickDateTime();
+                              await _pickDateTime(widget.category);
                             }
                           },
                           child: Text(
@@ -475,8 +484,8 @@ class _TaskScreenState extends State<TaskScreen>
                                 ? 'Pick Time'
                                 : 'Pick Date & Time',
                             style: const TextStyle(
-                                //color: Color(0XFFDDD3A4),
-                                ),
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
@@ -491,15 +500,15 @@ class _TaskScreenState extends State<TaskScreen>
                         backgroundColor: const Color.fromARGB(255, 23, 39, 58),
                       ),
                       onPressed: () {
-                        debugPrint("TASK IS ${tasks.isEmpty}");
+                        //debugPrint("TASK IS ${tasks.isEmpty}");
                         _addTask(taskProvider);
-                        debugPrint("TASK IS $tasks");
+                        //debugPrint("TASK IS $tasks");
                       },
                       child: const Text(
                         'Add Task',
                         style: TextStyle(
-                            //color: Color(0XFFDDD3A4),
-                            ),
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
